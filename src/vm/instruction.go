@@ -3,19 +3,19 @@ package vm
 type Instruction uint32
 
 func (self Instruction) Opcode() int {
-	return int(self & 0x3F);
+	return int(self & 0x7F)
 }
 
 func (self Instruction) ABC() (a, b, c int) {
-	a = int(self >> 6 & 0xFF)
-	c = int(self >> 14 & 0x1FF)
-	b = int(self >> 23 & 0x1FF)
+	a = int(self >> 7 & 0xFF)
+	b = int(self >> 16 & 0xFF)
+	c = int(self >> 24 & 0xFF)
 	return
 }
 
 func (self Instruction) ABx() (a, bx int) {
-	a = int(self >> 6 & 0xFF)
-	bx = int(self >> 14)
+	a = int(self >> 7 & 0xFF)
+	bx = int(self >> 15)
 	return
 }
 
@@ -25,10 +25,14 @@ func (self Instruction) AsBx() (a, abx int) {
 }
 
 func (self Instruction) Ax() int {
-	return int(self >> 6)
+	return int(self >> 7)
 }
 
-const MAXARG_Bx = 1<<18 - 1
+func (self Instruction) SJ() int {
+	return int(self >> 7)
+}
+
+const MAXARG_Bx = 1<<17 - 1
 const MAXARG_sBx = MAXARG_Bx
 
 func (self Instruction) OpName() string {
