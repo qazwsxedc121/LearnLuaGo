@@ -9,6 +9,8 @@ func (l *luaState) Compare(idx1, idx2 int, op CompareOp) bool {
 	case LUA_OPEQ: return _eq(a, b)
 	case LUA_OPLT: return _lt(a, b)
 	case LUA_OPLE: return _le(a, b)
+	case LUA_OPGT: return _gt(a, b)
+	case LUA_OPGE: return _ge(a, b)
 	default: panic("invalid compare op")
 	}
 }
@@ -75,6 +77,46 @@ func _le(a, b luaValue) bool {
 		switch y := b.(type) {
 		case float64: return x <= y
 		case int64: return x <= float64(y)
+		}
+	}
+	panic("comparison error")
+}
+
+func _gt(a, b luaValue) bool {
+	switch x := a.(type) {
+	case string:
+		if y, ok := b.(string); ok {
+			return x > y
+		}
+	case int64:
+		switch y := b.(type) {
+		case int64: return x > y
+		case float64: return float64(x) > y
+		}
+	case float64:
+		switch y := b.(type) {
+		case float64: return x > y
+		case int64: return x > float64(y)
+		}
+	}
+	panic("comparison error")
+}
+
+func _ge(a, b luaValue) bool {
+	switch x := a.(type) {
+	case string:
+		if y, ok := b.(string); ok {
+			return x >= y
+		}
+	case int64:
+		switch y := b.(type) {
+		case int64: return x >= y
+		case float64: return float64(x) >= y
+		}
+	case float64:
+		switch y := b.(type) {
+		case float64: return x >= y
+		case int64: return x >= float64(y)
 		}
 	}
 	panic("comparison error")

@@ -1,6 +1,6 @@
 package state
 
-
+import "binchunk"
 
 func (l *luaState) GetTop() int {
 	return l.stack.top
@@ -77,9 +77,11 @@ func (l *luaState) SetTop(idx int) {
 }
 
 
-func New() *luaState {
+func New(stackSize int, proto *binchunk.Prototype) *luaState {
 	return &luaState{
-		stack: newLuaStack(20),
+		stack: newLuaStack(stackSize),
+		proto: proto,
+		pc: 0,
 	}
 }
 

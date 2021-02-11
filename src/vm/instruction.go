@@ -6,10 +6,11 @@ func (self Instruction) Opcode() int {
 	return int(self & 0x7F)
 }
 
-func (self Instruction) ABC() (a, b, c int) {
+func (self Instruction) ABC() (a, b, c int, k bool) {
 	a = int(self >> 7 & 0xFF)
 	b = int(self >> 16 & 0xFF)
 	c = int(self >> 24 & 0xFF)
+	k = self >> 15 & 0x1 == 1
 	return
 }
 

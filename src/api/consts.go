@@ -34,4 +34,6 @@ const (
 	LUA_OPEQ = iota // ==
 	LUA_OPLT // <
 	LUA_OPLE // <=
+	LUA_OPGT // >
+	LUA_OPGE // >=
 )
