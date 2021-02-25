@@ -84,7 +84,7 @@ func bork(i Instruction, vm LuaVM) { _binaryArithK(i, vm, LUA_OPBOR)}
 func bxork(i Instruction, vm LuaVM) { _binaryArithK(i, vm, LUA_OPBXOR)}
 
 
-func _len(i Instruction, vm LuaVM) {
+func len(i Instruction, vm LuaVM) {
 	a, b, _, _ := i.ABC()
 	a += 1
 	b += 1
@@ -141,11 +141,11 @@ func _compareI(i Instruction, vm LuaVM, op CompareOp) {
 	vm.Pop(2)
 }
 
-func eqi(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPEQ) }
-func lti(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLT) }
-func lei(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPLE) }
-func gti(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPGT) }
-func gei(i Instruction, vm LuaVM) { _compare(i, vm, LUA_OPGE) }
+func eqi(i Instruction, vm LuaVM) { _compareI(i, vm, LUA_OPEQ) }
+func lti(i Instruction, vm LuaVM) { _compareI(i, vm, LUA_OPLT) }
+func lei(i Instruction, vm LuaVM) { _compareI(i, vm, LUA_OPLE) }
+func gti(i Instruction, vm LuaVM) { _compareI(i, vm, LUA_OPGT) }
+func gei(i Instruction, vm LuaVM) { _compareI(i, vm, LUA_OPGE) }
 
 func not(i Instruction, vm LuaVM) {
 	a, b, _, _ := i.ABC()
@@ -174,3 +174,14 @@ func test(i Instruction, vm LuaVM) {
 	}
 }
 
+func mmbin(i Instruction, vm LuaVM) {
+
+}
+
+func mmbini(i Instruction, vm LuaVM) {
+
+}
+
+func mmbink(i Instruction, vm LuaVM) {
+
+}

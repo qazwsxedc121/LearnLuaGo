@@ -3,7 +3,7 @@ package vm
 import . "api"
 
 func move(i Instruction, vm LuaVM) {
-	a, b, _ := i.ABC()
+	a, b, _, _ := i.ABC()
 	a += 1
 	b += 1
 	vm.Copy(b, a)
@@ -14,6 +14,9 @@ func jmp(i Instruction, vm LuaVM) {
 	vm.AddPC(a)
 }
 
+func varargprep(i Instruction, vm LuaVM) {
+
+}
 
 
 

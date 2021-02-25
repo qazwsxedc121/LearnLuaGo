@@ -6,7 +6,7 @@ type LuaVM interface {
 	AddPC(n int)
 	Fetch() uint32
 	GetConst(idx int)
-	GetRK(rk int)
+	GetRK(r int, k bool)
 }
 
 

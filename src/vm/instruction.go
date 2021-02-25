@@ -1,5 +1,7 @@
 package vm
 
+import "api"
+
 type Instruction uint32
 
 func (self Instruction) Opcode() int {
@@ -30,11 +32,20 @@ func (self Instruction) Ax() int {
 }
 
 func (self Instruction) SJ() int {
-	return int(self >> 7)
+	return int(self >> 7) - OFFSET_sJ
 }
 
-const MAXARG_Bx = 1<<17 - 1
-const MAXARG_sBx = MAXARG_Bx
+const SIZE_C = 8
+const SIZE_B = 8
+const SIZE_Bx = (SIZE_C + SIZE_B + 1)
+const SIZE_A = 8
+const SIZE_Ax = (SIZE_Bx + SIZE_A)
+const SIZE_sJ = SIZE_Bx + SIZE_A
+
+const MAXARG_Bx = 1 << SIZE_Bx - 1
+const MAXARG_sBx = MAXARG_Bx>>1
+const MAXARG_sJ = 1 << SIZE_sJ - 1
+const OFFSET_sJ = MAXARG_sJ >> 1
 
 func (self Instruction) OpName() string {
 	return opcodes[self.Opcode()].name
@@ -50,4 +61,13 @@ func (self Instruction) BMode() byte {
 
 func (self Instruction) CMode() byte {
 	return opcodes[self.Opcode()].argCMode
+}
+
+func (self Instruction) Execute(vm api.LuaVM) {
+	action := opcodes[self.Opcode()].action
+	if action != nil {
+		action(self, vm)
+	}else{
+		panic(self.OpName())
+	}
 }

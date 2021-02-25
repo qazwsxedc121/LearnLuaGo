@@ -11,7 +11,7 @@ import "os"
 import "binchunk"
 
 func main2() {
-	ls := state.New()
+	ls := state.New(20, &binchunk.Prototype{})
 	ls.PushBoolean(true); printStack(ls)
 	ls.PushInteger(10); printStack(ls)
 	ls.PushNil(); printStack(ls)
@@ -23,8 +23,8 @@ func main2() {
 	ls.SetTop(-5); printStack(ls)
 }
 
-func main(){
-	ls := state.New()
+func main3(){
+	ls := state.New(20, &binchunk.Prototype{})
 	ls.PushInteger(1)
 	ls.PushString("2.0")
 	ls.PushString("3.0")
@@ -37,6 +37,34 @@ func main(){
 	ls.PushBoolean(ls.Compare(1, 2, api.LUA_OPEQ))
 	printStack(ls)
 
+}
+
+func main() {
+	if len(os.Args) > 1 {
+		data, err := ioutil.ReadFile(os.Args[1])
+		if err != nil {
+			panic(err)
+		}
+		proto := binchunk.Undump(data)
+		luaMain(proto)
+	}
+}
+
+func luaMain(proto *binchunk.Prototype) {
+	nRegs := int(proto.MaxStackSize)
+	ls := state.New(nRegs+8, proto)
+	ls.SetTop(nRegs)
+	for {
+		pc := ls.PC()
+		inst := vm.Instruction(ls.Fetch())
+		if inst.Opcode() != vm.OP_RETURN {
+			inst.Execute(ls)
+			fmt.Printf("[%02d] %s ", pc+1, inst.OpName())
+			printStack(ls)
+		} else {
+			break
+		}
+	}
 }
 
 func printStack(ls api.LuaState){
@@ -136,7 +164,7 @@ func printCode(f *binchunk.Prototype) {
 func printOperands(i vm.Instruction) {
 	switch i.OpMode() {
 	case vm.IABC:
-		a, b, c := i.ABC()
+		a, b, c, _ := i.ABC()
 		fmt.Printf("%d", a)
 		if i.BMode() != vm.OpArgN {
 			if b > 0xFF {
@@ -166,5 +194,8 @@ func printOperands(i vm.Instruction) {
 	case vm.IAx:
 		ax := i.Ax()
 		fmt.Printf("%d", -1-ax)
+	case vm.IsJ:
+		sJ := i.SJ()
+		fmt.Printf("%d", sJ)
 	}
 }
