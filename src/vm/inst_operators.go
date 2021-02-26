@@ -133,8 +133,9 @@ func eqk(i Instruction, vm LuaVM) {
 func _compareI(i Instruction, vm LuaVM, op CompareOp) {
 	a, b, _, k := i.ABC()
 	a += 1
+	sb := b - OFFSET_sC
 	vm.PushValue(a)
-	vm.PushInteger(int64(b))
+	vm.PushInteger(int64(sb))
 	if vm.Compare(-2, -1, op) != k {
 		vm.AddPC(1)
 	}

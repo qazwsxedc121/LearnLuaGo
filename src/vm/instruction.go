@@ -42,10 +42,14 @@ const SIZE_A = 8
 const SIZE_Ax = (SIZE_Bx + SIZE_A)
 const SIZE_sJ = SIZE_Bx + SIZE_A
 
+const MAXARG_A = 1 << SIZE_A - 1
+const MAXARG_B = 1 << SIZE_B - 1
+const MAXARG_C = 1 << SIZE_C - 1
 const MAXARG_Bx = 1 << SIZE_Bx - 1
 const MAXARG_sBx = MAXARG_Bx>>1
 const MAXARG_sJ = 1 << SIZE_sJ - 1
 const OFFSET_sJ = MAXARG_sJ >> 1
+const OFFSET_sC = MAXARG_C >> 1
 
 func (self Instruction) OpName() string {
 	return opcodes[self.Opcode()].name
