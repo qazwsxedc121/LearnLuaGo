@@ -1,21 +1,21 @@
 package state
 
 func (l *luaState) PC() int {
-	return l.pc
+	return l.stack.pc
 }
 
 func (l *luaState) AddPC(n int) {
-	l.pc += n
+	l.stack.pc += n
 }
 
 func (l *luaState) Fetch() uint32 {
-	i := l.proto.Code[l.pc]
-	l.pc++
+	i := l.stack.closure.proto.Code[l.stack.pc]
+	l.stack.pc++
 	return i
 }
 
 func (l *luaState) GetConst(idx int) {
-	c := l.proto.Constants[idx]
+	c := l.stack.closure.proto.Constants[idx]
 	l.stack.push(c)
 }
 
