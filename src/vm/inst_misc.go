@@ -18,6 +18,21 @@ func varargprep(i Instruction, vm LuaVM) {
 
 }
 
+func extraarg(i Instruction, vm LuaVM) {
+
+}
+
+func setTabup(i Instruction, vm LuaVM) {
+
+}
+
+func getTabup(i Instruction, vm LuaVM) {
+
+}
+
+func call(i Instruction, vm LuaVM) {
+	print(vm)
+}
 
 
 

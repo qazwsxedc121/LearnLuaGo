@@ -10,11 +10,10 @@ func newTable(i Instruction, vm LuaVM) {
 }
 
 func getTable(i Instruction, vm LuaVM) {
-	a, b, c, k := i.ABC()
+	a, b, c, _ := i.ABC()
 	a += 1
-	b += 1
-	vm.GetRK(c, k)
-	vm.GetTable(b)
+	vm.PushValue(c)
+	vm.GetTable(b+1)
 	vm.Replace(a)
 }
 
@@ -26,13 +25,58 @@ func setTable(i Instruction, vm LuaVM) {
 	vm.SetTable(a)
 }
 
-func setList(i Instruction, vm LuaVM) {
+func getField(i Instruction, vm LuaVM) {
 	a, b, c, _ := i.ABC()
 	a += 1
-	if c > 0 {
-		c = c - 1
-	} else {
-		c = Instruction(vm.Fetch()).Ax()
+	vm.GetConst(c)
+	vm.GetTable(b+1)
+	vm.Replace(a)
+}
+
+func getI(i Instruction, vm LuaVM) {
+	a, b, c, _ := i.ABC()
+	a += 1
+	vm.PushInteger(int64(c))
+	vm.GetTable(b+1)
+	vm.Replace(a)
+}
+
+func setField(i Instruction, vm LuaVM) {
+	a, b, c, k := i.ABC()
+	a += 1
+	if k {
+		vm.GetConst(b)
+		vm.GetConst(c)
+	}
+	vm.SetTable(a)
+
+}
+
+func setI(i Instruction, vm LuaVM) {
+	a, b, c, k := i.ABC()
+	a += 1
+	vm.PushInteger(int64(b))
+	if k {
+		vm.GetConst(c)
+	}else{
+		vm.PushValue(c+1)
+	}
+	vm.SetTable(a)
+}
+
+func setList(i Instruction, vm LuaVM) {
+	a, b, c, k := i.ABC()
+	a += 1
+	n := b
+	last := c
+
+	if n == 0 {
+		n = vm.GetTop() - a - 1
+	}
+
+	last += n
+	if k {
+		last += Instruction(vm.Fetch()).Ax()
 	}
 	idx := int64(c * LFIELDS_PER_FLUSH)
 	for j := 1; j <= b; j++ {
