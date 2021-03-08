@@ -71,7 +71,8 @@ func setList(i Instruction, vm LuaVM) {
 	last := c
 
 	if n == 0 {
-		n = vm.GetTop() - a - 1
+		n = int(vm.ToInteger(-1)) - a - 1
+		vm.Pop(1)
 	}
 
 	last += n

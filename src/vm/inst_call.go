@@ -69,3 +69,32 @@ func _return(i Instruction, vm LuaVM) {
 	}
 }
 
+func vararg(i Instruction, vm LuaVM) {
+	a, b, _, _ := i.ABC()
+	a += 1
+	if b != 1 {
+		vm.LoadVararg(b - 1)
+		_popResults(a, b, vm)
+	}
+}
+
+func tailCall(i Instruction, vm LuaVM) {
+	a, b, _, _ := i.ABC()
+	a += 1
+	c := 0
+	nArgs := _pushFuncAndArgs(a, b, vm)
+	vm.Call(nArgs, c-1)
+	_popResults(a, c, vm)
+}
+
+func self(i Instruction, vm LuaVM) {
+	a, b, c, k := i.ABC()
+	a += 1
+	b += 1
+	vm.Copy(b, a+1)
+	vm.GetRK(c, k)
+	vm.GetTable(b)
+	vm.Replace(a)
+}
+
+

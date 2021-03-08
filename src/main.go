@@ -10,61 +10,21 @@ import "io/ioutil"
 import "os"
 import "binchunk"
 
-func main2() {
-	ls := state.New(20, &binchunk.Prototype{})
-	ls.PushBoolean(true); printStack(ls)
-	ls.PushInteger(10); printStack(ls)
-	ls.PushNil(); printStack(ls)
-	ls.PushString("hello"); printStack(ls)
-	ls.PushValue(-4); printStack(ls)
-	ls.Replace(3); printStack(ls)
-	ls.SetTop(6); printStack(ls)
-	ls.Remove(-3); printStack(ls)
-	ls.SetTop(-5); printStack(ls)
-}
-
-func main3(){
-	ls := state.New(20, &binchunk.Prototype{})
-	ls.PushInteger(1)
-	ls.PushString("2.0")
-	ls.PushString("3.0")
-	ls.PushNumber(4.0)
-	printStack(ls)
-	ls.Arith(api.LUA_OPADD); printStack(ls)
-	ls.Arith(api.LUA_OPBNOT); printStack(ls)
-	ls.Len(2); printStack(ls)
-	ls.Concat(3); printStack(ls)
-	ls.PushBoolean(ls.Compare(1, 2, api.LUA_OPEQ))
-	printStack(ls)
-
-}
-
 func main() {
 	if len(os.Args) > 1 {
 		data, err := ioutil.ReadFile(os.Args[1])
 		if err != nil {
 			panic(err)
 		}
-		proto := binchunk.Undump(data)
-		luaMain(proto)
+		luaMain(data)
 	}
 }
 
-func luaMain(proto *binchunk.Prototype) {
-	nRegs := int(proto.MaxStackSize)
-	ls := state.New(nRegs+8, proto)
-	ls.SetTop(nRegs)
-	for {
-		pc := ls.PC()
-		inst := vm.Instruction(ls.Fetch())
-		if inst.Opcode() != vm.OP_RETURN {
-			inst.Execute(ls)
-			fmt.Printf("[%02d] %s ", pc+1, inst.OpName())
-			printStack(ls)
-		} else {
-			break
-		}
-	}
+func luaMain(data []byte) {
+
+	ls := state.New(20)
+	ls.Load(data, os.Args[1], "b")
+	ls.Call(0, 0)
 }
 
 func printStack(ls api.LuaState){

@@ -37,6 +37,9 @@ func (self *reader) readLuaNumber() float64 {
 
 func (self *reader) readString() string {
 	size := uint(self.readVarInt())
+	if size == 0 {
+		return ""
+	}
 	bytes := self.readBytes(size - 1)
 	ret := string(bytes)
 	return ret
